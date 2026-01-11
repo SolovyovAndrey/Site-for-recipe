@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Website</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2b2b2b; /* dark grey */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #333;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            color: #ffb85c;
+			text-align: center;
+        }
+		
+		h2 {
+            color: #ffb85c;
+        }
+
+        p, li {
+            color: #888;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+        }
+
+        .recipe-image {
+            width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Language switch */
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .lang-switch button {
+            margin-left: 5px;
+            padding: 6px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            background: #ddd;
+        }
+
+        .lang-switch button:hover {
+            background: #bbb;
+        }
+
+        /* Download button */
+        .download-btn {
+            display: block;
+            margin: 40px auto 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #d2691e;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #a85217;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Language switch -->
+    <div class="lang-switch">
+        <button onclick="setLanguage('en')">EN</button>
+        <button onclick="setLanguage('uk')">UA</button>
+        <button onclick="setLanguage('fr')">FR</button>
+    </div>
+
+    <h1 id="title"></h1>
+
+    <img
+        src="https://stravy.net/uploads/images/default/5523_5a.jpg"
+        alt="Lamb ribs with sauce"
+        class="recipe-image"
+        loading="lazy"
+    >
+
+    <h2 id="ingredientsTitle"></h2>
+    <ul id="ingredients"></ul>
+
+    <h2 id="instructionsTitle"></h2>
+    <ol id="instructions"></ol>
+
+    <!-- Download button at bottom -->
+    <button class="download-btn" onclick="downloadRecipe()" id="downloadBtn"></button>
+
+    <div class="footer">
+        © 2026 My Personal Recipe Website
+    </div>
+</div>
+
+<script>
+const content = {
+    en: {
+        title: "Lamb Ribs in Ginger-Honey Sauce",
+        download: "⬇️ Download Recipe",
+        ingredientsTitle: "Ingredients",
+        ingredients: [
+            "1–1.2 kg lamb ribs",
+            "3 cloves garlic",
+            "2–3 cm fresh ginger",
+            "3 tbsp honey",
+            "4 tbsp soy sauce",
+            "Salt, pepper, oil"
+        ],
+        instructionsTitle: "Instructions",
+        instructions: [
+            "Wash and dry the ribs.",
+            "Mix honey, soy sauce, ginger, garlic, salt and pepper.",
+            "Marinate for 30–60 minutes.",
+            "Bake at 180–200°C for 40–60 minutes.",
+            "Increase heat to caramelize.",
+            "Serve hot."
+        ]
+    },
+
+    uk: {
+        title: "Баранячі ребра в імбирно-медовому соусі",
+        download: "⬇️ Завантажити рецепт",
+        ingredientsTitle: "Інгредієнти",
+        ingredients: [
+            "1–1,2 кг баранячих ребер",
+            "3 зубчики часнику",
+            "2–3 см імбиру",
+            "3 ст. л. меду",
+            "4 ст. л. соєвого соусу",
+            "Сіль, перець, олія"
+        ],
+        instructionsTitle: "Приготування",
+        instructions: [
+            "Промити та обсушити ребра.",
+            "Змішати мед, соєвий соус, імбир і часник.",
+            "Замаринувати на 30–60 хвилин.",
+            "Запікати при 180–200°C 40–60 хвилин.",
+            "Збільшити температуру для скоринки.",
+            "Подавати гарячими."
+        ]
+    },
+
+    fr: {
+        title: "Travers d’agneau sauce miel-gingembre",
+        download: "⬇️ Télécharger la recette",
+        ingredientsTitle: "Ingrédients",
+        ingredients: [
+            "1–1,2 kg de côtes d’agneau",
+            "3 gousses d’ail",
+            "2–3 cm de gingembre frais",
+            "3 c. à s. de miel",
+            "4 c. à s. de sauce soja",
+            "Sel, poivre, huile"
+        ],
+        instructionsTitle: "Préparation",
+        instructions: [
+            "Laver et sécher les côtes.",
+            "Mélanger miel, sauce soja, gingembre et ail.",
+            "Faire mariner 30–60 minutes.",
+            "Cuire au four à 180–200°C pendant 40–60 minutes.",
+            "Augmenter la chaleur pour caraméliser.",
+            "Servir chaud."
+        ]
+    }
+};
+
+let currentLang = "uk";
+
+function setLanguage(lang) {
+    currentLang = lang;
+    const data = content[lang];
+
+    document.getElementById("title").textContent = data.title;
+    document.getElementById("downloadBtn").textContent = data.download;
+    document.getElementById("ingredientsTitle").textContent = data.ingredientsTitle;
+    document.getElementById("instructionsTitle").textContent = data.instructionsTitle;
+
+    const ingredientsList = document.getElementById("ingredients");
+    ingredientsList.innerHTML = "";
+    data.ingredients.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ingredientsList.appendChild(li);
+    });
+
+    const instructionsList = document.getElementById("instructions");
+    instructionsList.innerHTML = "";
+    data.instructions.forEach(step => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        instructionsList.appendChild(li);
+    });
+}
+
+function downloadRecipe() {
+    const data = content[currentLang];
+    let text = `${data.title}\n\n${data.ingredientsTitle}:\n`;
+    data.ingredients.forEach(i => text += `- ${i}\n`);
+    text += `\n${data.instructionsTitle}:\n`;
+    data.instructions.forEach((s, i) => text += `${i + 1}. ${s}\n`);
+
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "recipe.txt";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+/* Default language */
+setLanguage(currentLang);
+</script>
+
+</body>
+</html>
